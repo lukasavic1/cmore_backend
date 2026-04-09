@@ -1,4 +1,10 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Creates the personal access tokens table used by Laravel Sanctum.
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

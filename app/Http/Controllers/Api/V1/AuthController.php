@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Handles auth-related API actions including Firebase token
+ * verification and logout.
+ */
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -22,20 +29,28 @@ class AuthController extends Controller
         $request->validate(['token' => 'required|string']);
 
         // Verify the Firebase ID token using the Firebase REST API.
-        // The accounts:lookup endpoint validates the token and returns user data.
+        // The accounts:lookup endpoint validates the token
+        // and returns user data.
         $response = Http::post(
-            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' . config('services.firebase.api_key'),
+            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key='
+                . config('services.firebase.api_key'),
             ['idToken' => $request->token]
         );
 
         if (!$response->ok()) {
-            return response()->json(['message' => 'Invalid Firebase token.'], 401);
+            return response()->json(
+                ['message' => 'Invalid Firebase token.'],
+                401
+            );
         }
 
         $users = $response->json('users');
 
         if (empty($users)) {
-            return response()->json(['message' => 'Firebase user not found.'], 401);
+            return response()->json(
+                ['message' => 'Firebase user not found.'],
+                401
+            );
         }
 
         $firebaseUser = $users[0];

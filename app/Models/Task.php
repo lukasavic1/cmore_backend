@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Defines the Task Eloquent model, casts, and helper scopes used by the
+ * API.
+ */
 
 namespace App\Models;
 
@@ -54,7 +61,10 @@ class Task extends Model
 
     public function scopeOverdue(Builder $query): Builder
     {
-        return $query->whereIn('status', [TaskStatus::Todo->value, TaskStatus::InProgress->value])
+        return $query->whereIn('status', [
+            TaskStatus::Todo->value,
+            TaskStatus::InProgress->value,
+        ])
                      ->whereNotNull('due_date')
                      ->where('due_date', '<', now()->toDateString());
     }
@@ -74,7 +84,11 @@ class Task extends Model
 
     public function isOverdue(): bool
     {
-        return in_array($this->status, [TaskStatus::Todo, TaskStatus::InProgress], true)
+        return in_array(
+            $this->status,
+            [TaskStatus::Todo, TaskStatus::InProgress],
+            true
+        )
             && $this->due_date !== null
             && $this->due_date->isPast();
     }

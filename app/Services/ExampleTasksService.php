@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Seeds starter task records so new users see populated kanban columns
+ * immediately.
+ */
 
 namespace App\Services;
 
@@ -13,14 +20,17 @@ class ExampleTasksService
     }
 
     /**
-     * A few starter tasks so new accounts see the kanban columns without clutter.
+     * A few starter tasks so new accounts
+     * see the kanban columns without clutter.
      */
     public function seedForUser(User $user): void
     {
         $rows = [
             [
                 'title'       => 'Plan sustainability report',
-                'description' => 'Example in To do — drag this to In progress or Completed.',
+                'description' =>
+                    'Example in To do — drag this to In progress '
+                    . 'or Completed.',
                 'assignee'    => 'Luka',
                 'status'      => TaskStatus::Todo->value,
                 'priority'    => TaskPriority::Medium->value,
@@ -28,7 +38,9 @@ class ExampleTasksService
             ],
             [
                 'title'       => 'Review ESG metrics',
-                'description' => 'Example in progress — move it across columns to show the flow.',
+                'description' =>
+                    'Example in progress — move it across columns '
+                    . 'to show the flow.',
                 'assignee'    => 'Luka',
                 'status'      => TaskStatus::InProgress->value,
                 'priority'    => TaskPriority::High->value,
@@ -36,7 +48,9 @@ class ExampleTasksService
             ],
             [
                 'title'       => 'Publish quarterly update',
-                'description' => 'Example completed — drag back to To do if you want to demo again.',
+                'description' =>
+                    'Example completed — drag back to To do if '
+                    . 'you want to demo again.',
                 'assignee'    => 'Vladimir',
                 'status'      => TaskStatus::Completed->value,
                 'priority'    => TaskPriority::Low->value,
@@ -45,7 +59,9 @@ class ExampleTasksService
         ];
 
         foreach ($rows as $row) {
-            $this->taskService->create(array_merge($row, ['user_id' => $user->id]));
+            $this->taskService->create(
+                array_merge($row, ['user_id' => $user->id])
+            );
         }
     }
 }

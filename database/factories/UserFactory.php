@@ -1,4 +1,10 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Generates fake user records for tests and seed data.
+ */
 
 namespace Database\Factories;
 

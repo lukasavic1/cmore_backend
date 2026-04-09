@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Generates realistic task model data for tests and database seeding
+ * scenarios.
+ */
 
 namespace Database\Factories;
 
@@ -18,7 +25,9 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'     => fn () => auth()->check() ? auth()->id() : User::factory()->create()->id,
+            'user_id'     => fn () => auth()->check()
+                ? auth()->id()
+                : User::factory()->create()->id,
             'title'       => $this->faker->sentence(4),
             'description' => $this->faker->optional(0.7)->paragraph(),
             'assignee'    => $this->faker->optional(0.75)->randomElement([
@@ -29,9 +38,15 @@ class TaskFactory extends Factory
                 'QA',
                 'Product ops',
             ]),
-            'status'      => $this->faker->randomElement(TaskStatus::cases())->value,
-            'priority'    => $this->faker->randomElement(TaskPriority::cases())->value,
-            'due_date'    => $this->faker->optional(0.6)->dateTimeBetween('-1 week', '+2 months')?->format('Y-m-d'),
+            'status'      => $this->faker
+                ->randomElement(TaskStatus::cases())
+                ->value,
+            'priority'    => $this->faker
+                ->randomElement(TaskPriority::cases())
+                ->value,
+            'due_date'    => $this->faker
+                ->optional(0.6)
+                ->dateTimeBetween('-1 week', '+2 months')?->format('Y-m-d'),
         ];
     }
 

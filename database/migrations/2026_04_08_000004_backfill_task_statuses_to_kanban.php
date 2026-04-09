@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Migrates legacy task statuses to kanban statuses with SQLite-safe
+ * table rebuild logic.
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -20,8 +27,10 @@ return new class extends Migration
     {
         $driver = DB::getDriverName();
 
-        // SQLite stores `enum()` as TEXT + CHECK constraint, which can't be altered in-place.
-        // So we rebuild the table with the new allowed statuses and copy data across.
+        // SQLite stores `enum()` as TEXT + CHECK constraint,
+        // which can't be altered in-place.
+        // So we rebuild the table with the new allowed statuses
+        // and copy data across.
         if ($driver === 'sqlite') {
             Schema::disableForeignKeyConstraints();
 
@@ -37,14 +46,19 @@ return new class extends Migration
                 $table->id();
                 $table->string('title', 255);
                 $table->text('description')->nullable();
-                $table->enum('status', ['todo', 'in_progress', 'completed'])->default('todo');
-                $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+                $table->enum('status', ['todo', 'in_progress', 'completed'])
+                    ->default('todo');
+                $table->enum('priority', ['low', 'medium', 'high'])
+                    ->default('medium');
                 $table->date('due_date')->nullable();
                 $table->timestamps();
             });
 
             DB::statement("
-                INSERT INTO tasks (id, title, description, status, priority, due_date, created_at, updated_at)
+                INSERT INTO tasks (
+                    id, title, description, status,
+                    priority, due_date, created_at, updated_at
+                )
                 SELECT
                     id,
                     title,
@@ -68,8 +82,11 @@ return new class extends Migration
             return;
         }
 
-        // MySQL/Postgres: simple backfill is enough (ENUM alteration handled separately if needed)
-        DB::table('tasks')->where('status', 'pending')->update(['status' => 'todo']);
+        // MySQL/Postgres: simple backfill is enough
+        // (ENUM alteration handled separately if needed)
+        DB::table('tasks')
+            ->where('status', 'pending')
+            ->update(['status' => 'todo']);
     }
 
     public function down(): void
@@ -90,14 +107,19 @@ return new class extends Migration
                 $table->id();
                 $table->string('title', 255);
                 $table->text('description')->nullable();
-                $table->enum('status', ['pending', 'completed'])->default('pending');
-                $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+                $table->enum('status', ['pending', 'completed'])
+                    ->default('pending');
+                $table->enum('priority', ['low', 'medium', 'high'])
+                    ->default('medium');
                 $table->date('due_date')->nullable();
                 $table->timestamps();
             });
 
             DB::statement("
-                INSERT INTO tasks (id, title, description, status, priority, due_date, created_at, updated_at)
+                INSERT INTO tasks (
+                    id, title, description, status,
+                    priority, due_date, created_at, updated_at
+                )
                 SELECT
                     id,
                     title,
@@ -118,7 +140,9 @@ return new class extends Migration
             return;
         }
 
-        DB::table('tasks')->where('status', 'todo')->update(['status' => 'pending']);
+        DB::table('tasks')
+            ->where('status', 'todo')
+            ->update(['status' => 'pending']);
     }
 };
 

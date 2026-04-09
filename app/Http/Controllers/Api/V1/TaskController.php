@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Exposes task API endpoints for listing, creating, updating, and
+ * deleting tasks.
+ */
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -21,7 +28,8 @@ class TaskController extends Controller
     /**
      * GET /api/v1/tasks
      *
-     * List all tasks with optional ?status=, ?search=, ?assignee=, and ?unassigned=1 filters.
+     * List all tasks with optional ?status=, ?search=,
+     * ?assignee=, and ?unassigned=1 filters.
      */
     public function index(Request $request): TaskCollection
     {
@@ -80,7 +88,10 @@ class TaskController extends Controller
      *
      * Update a task.
      */
-    public function update(UpdateTaskRequest $request, Task $task): TaskResource
+    public function update(
+        UpdateTaskRequest $request,
+        Task $task
+    ): TaskResource
     {
         $task = $this->taskService->update($task, $request->validated());
 

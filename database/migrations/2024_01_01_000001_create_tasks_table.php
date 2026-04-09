@@ -1,4 +1,10 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Creates the tasks table schema with core columns and default values.
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,8 +21,10 @@ return new class extends Migration
             $table->id();
             $table->string('title', 255);
             $table->text('description')->nullable();
-            $table->enum('status', ['todo', 'in_progress', 'completed'])->default('todo');
-            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+            $table->enum('status', ['todo', 'in_progress', 'completed'])
+                ->default('todo');
+            $table->enum('priority', ['low', 'medium', 'high'])
+                ->default('medium');
             $table->date('due_date')->nullable();
             $table->timestamps();
         });

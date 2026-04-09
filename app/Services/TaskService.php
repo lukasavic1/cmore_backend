@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Contains business logic for task CRUD operations, filtering,
+ * statistics, and cache invalidation.
+ */
 
 namespace App\Services;
 
@@ -76,8 +83,9 @@ class TaskService
     public function create(array $data): Task
     {
         $data = $this->dropNullEnumColumns($data);
-        // Always set enum columns on the model: DB defaults are not synced back after
-        // insert, so omitted keys leave raw attributes missing and enum casts become null.
+        // Always set enum columns on the model. DB defaults are not synced
+        // back after insert, so omitted keys leave raw attributes missing
+        // and enum casts become null.
         $data = array_merge(
             [
                 'status'   => TaskStatus::Todo->value,
@@ -137,13 +145,22 @@ class TaskService
 
     public function stats(int $userId): array
     {
-        return Cache::remember($this->statsCacheKey($userId), self::STATS_CACHE_TTL, function () use ($userId) {
+        return Cache::remember(
+            $this->statsCacheKey($userId),
+            self::STATS_CACHE_TTL,
+            function () use ($userId) {
             $base = Task::query()->where('user_id', $userId);
 
             $total = (clone $base)->count();
-            $completed = (clone $base)->where('status', TaskStatus::Completed->value)->count();
-            $todo = (clone $base)->where('status', TaskStatus::Todo->value)->count();
-            $inProgress = (clone $base)->where('status', TaskStatus::InProgress->value)->count();
+                $completed = (clone $base)
+                    ->where('status', TaskStatus::Completed->value)
+                    ->count();
+                $todo = (clone $base)
+                    ->where('status', TaskStatus::Todo->value)
+                    ->count();
+                $inProgress = (clone $base)
+                    ->where('status', TaskStatus::InProgress->value)
+                    ->count();
             $overdue = (clone $base)->overdue()->count();
 
             return [
@@ -168,7 +185,8 @@ class TaskService
     }
 
     /**
-     * Avoid persisting null for enum columns: validated JSON can include explicit nulls,
+     * Avoid persisting null for enum columns:
+     * validated JSON can include explicit nulls,
      * which overrides DB defaults and breaks enum casts in TaskResource.
      */
     private function dropNullEnumColumns(array $data): array

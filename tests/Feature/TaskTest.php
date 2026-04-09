@@ -1,4 +1,11 @@
 <?php
+/**
+ * date: 9.4.2026.
+ * owner: lukasavic18@gmail.com
+ *
+ * Covers task API behavior with feature tests for CRUD, filters, and
+ * statistics endpoints.
+ */
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
@@ -60,7 +67,10 @@ describe('POST /api/v1/tasks', function () {
     });
 
     it('creates a task with only the required title field', function () {
-        $response = $this->postJson('/api/v1/tasks', ['title' => 'Minimal Task']);
+        $response = $this->postJson(
+            '/api/v1/tasks',
+            ['title' => 'Minimal Task']
+        );
 
         $response->assertStatus(201)
                  ->assertJsonPath('data.title', 'Minimal Task')
@@ -136,7 +146,12 @@ describe('GET /api/v1/tasks', function () {
         $response->assertStatus(200)
                  ->assertJsonStructure([
                      'data' => [['id', 'title', 'status', 'priority']],
-                     'meta' => ['current_page', 'per_page', 'total', 'last_page'],
+                     'meta' => [
+                         'current_page',
+                         'per_page',
+                         'total',
+                         'last_page',
+                     ],
                      'links' => ['first', 'last', 'prev', 'next'],
                  ])
                  ->assertJsonPath('meta.total', 5);
@@ -246,7 +261,9 @@ describe('GET /api/v1/tasks?search=', function () {
 
     it('combines status filter with search', function () {
         Task::factory()->pending()->create(['title' => 'Todo search task']);
-        Task::factory()->completed()->create(['title' => 'Completed search task']);
+        Task::factory()->completed()->create([
+            'title' => 'Completed search task',
+        ]);
         Task::factory()->pending()->create(['title' => 'Unrelated todo task']);
 
         $response = $this->getJson('/api/v1/tasks?status=todo&search=search');
@@ -259,7 +276,9 @@ describe('GET /api/v1/tasks?search=', function () {
     it('returns empty when search finds no matches', function () {
         Task::factory()->count(3)->create();
 
-        $response = $this->getJson('/api/v1/tasks?search=xyzzy_does_not_exist');
+        $response = $this->getJson(
+            '/api/v1/tasks?search=xyzzy_does_not_exist'
+        );
 
         $response->assertStatus(200)
                  ->assertJsonPath('meta.total', 0);
@@ -276,7 +295,9 @@ describe('GET /api/v1/tasks assignee filters', function () {
         Task::factory()->create(['assignee' => 'Frontend team']);
         Task::factory()->create(['assignee' => 'Backend team']);
 
-        $response = $this->getJson('/api/v1/tasks?assignee='.rawurlencode('Backend team'));
+        $response = $this->getJson(
+            '/api/v1/tasks?assignee=' . rawurlencode('Backend team')
+        );
 
         $response->assertStatus(200)
                  ->assertJsonPath('meta.total', 2);
@@ -301,7 +322,9 @@ describe('GET /api/v1/tasks assignee filters', function () {
         Task::factory()->create(['assignee' => null]);
         Task::factory()->create(['assignee' => 'Backend team']);
 
-        $response = $this->getJson('/api/v1/tasks?unassigned=1&assignee=Backend+team');
+        $response = $this->getJson(
+            '/api/v1/tasks?unassigned=1&assignee=Backend+team'
+        );
 
         $response->assertStatus(200)
                  ->assertJsonPath('meta.total', 1);
@@ -327,8 +350,14 @@ describe('GET /api/v1/tasks/assignees', function () {
 
     it('does not include assignees from other users', function () {
         $other = User::factory()->create();
-        Task::factory()->create(['assignee' => 'Mine', 'user_id' => auth()->id()]);
-        Task::factory()->create(['assignee' => 'Theirs', 'user_id' => $other->id]);
+        Task::factory()->create([
+            'assignee' => 'Mine',
+            'user_id' => auth()->id(),
+        ]);
+        Task::factory()->create([
+            'assignee' => 'Theirs',
+            'user_id' => $other->id,
+        ]);
 
         $response = $this->getJson('/api/v1/tasks/assignees');
 
@@ -511,11 +540,20 @@ describe('GET /api/v1/stats', function () {
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
-                     'data' => ['total', 'completed', 'todo', 'in_progress', 'overdue'],
+                     'data' => [
+                         'total',
+                         'completed',
+                         'todo',
+                         'in_progress',
+                         'overdue',
+                     ],
                  ])
                  ->assertJsonPath('data.total', 9)
                  ->assertJsonPath('data.completed', 2)
-                 ->assertJsonPath('data.todo', 5)   // 3 + 2 overdue (still todo)
+                 ->assertJsonPath(
+                    'data.todo',
+                    5
+                ) // 3 + 2 overdue (still todo)
                  ->assertJsonPath('data.in_progress', 2)
                  ->assertJsonPath('data.overdue', 2);
     });
