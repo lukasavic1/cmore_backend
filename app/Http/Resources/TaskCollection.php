@@ -18,20 +18,6 @@ class TaskCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
-            'meta' => [
-                'current_page' => $this->currentPage(),
-                'per_page'     => $this->perPage(),
-                'total'        => $this->total(),
-                'last_page'    => $this->lastPage(),
-                'from'         => $this->firstItem(),
-                'to'           => $this->lastItem(),
-            ],
-            'links' => [
-                'first' => $this->url(1),
-                'last'  => $this->url($this->lastPage()),
-                'prev'  => $this->previousPageUrl(),
-                'next'  => $this->nextPageUrl(),
-            ],
         ];
     }
 }

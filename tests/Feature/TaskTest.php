@@ -531,8 +531,12 @@ describe('PATCH /api/v1/tasks/{id}/toggle', function () {
 
 describe('GET /api/v1/stats', function () {
     it('returns correct stats', function () {
-        Task::factory()->count(3)->pending()->create();
-        Task::factory()->count(2)->inProgress()->create();
+        Task::factory()->count(3)->pending()->create([
+            'due_date' => now()->addDays(7)->format('Y-m-d'),
+        ]);
+        Task::factory()->count(2)->inProgress()->create([
+            'due_date' => now()->addDays(7)->format('Y-m-d'),
+        ]);
         Task::factory()->count(2)->completed()->create();
         Task::factory()->count(2)->overdue()->create();
 

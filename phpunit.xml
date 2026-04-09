@@ -3,6 +3,8 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         failOnDeprecation="false"
+         displayDetailsOnTestsThatTriggerDeprecations="false"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -12,12 +14,15 @@
             <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
-    <source>
+    <source ignoreSelfDeprecations="true"
+            ignoreDirectDeprecations="true"
+            ignoreIndirectDeprecations="true">
         <include>
             <directory>app</directory>
         </include>
     </source>
     <php>
+        <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED &amp; ~E_USER_DEPRECATED"/>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>

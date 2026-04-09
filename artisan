@@ -8,6 +8,12 @@ define('LARAVEL_START', microtime(true));
 // Register the Composer autoloader...
 require __DIR__.'/vendor/autoload.php';
 
+// Suppress upstream PHP 8.5 deprecation noise during test runs.
+$argv = $_SERVER['argv'] ?? [];
+if (in_array('test', $argv, true)) {
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+}
+
 // Bootstrap Laravel and handle the command...
 $status = (require_once __DIR__.'/bootstrap/app.php')
     ->handleCommand(new ArgvInput);

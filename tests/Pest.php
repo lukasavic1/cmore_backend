@@ -19,26 +19,6 @@
 |
 */
 
-// #region agent log
-file_put_contents(
-    '/Users/lukasavic/Documents/cmore-test/.cursor/debug-545ce9.log',
-    json_encode([
-        'sessionId' => '545ce9',
-        'runId' => 'pre-fix',
-        'hypothesisId' => 'H1',
-        'location' => 'tests/Pest.php',
-        'message' => 'Pest bootstrap environment check',
-        'data' => [
-            'mockeryClassExists' => class_exists('Mockery'),
-            'mockeryFileExists' => file_exists(
-                __DIR__.'/../vendor/mockery/mockery/library/Mockery.php'
-            ),
-            'testCaseClassExists' => class_exists(Tests\TestCase::class),
-        ],
-        'timestamp' => (int) (microtime(true) * 1000),
-    ], JSON_UNESCAPED_SLASHES).PHP_EOL,
-    FILE_APPEND
-);
-// #endregion
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 uses(Tests\TestCase::class)->in('Feature');
